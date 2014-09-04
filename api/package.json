@@ -1,0 +1,30 @@
+{
+  "name": "cereal-app-api",
+  "version": "0.0.1",
+  "description": "REST API for cereal-app",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Rowell Cruz",
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt": "~0.8.0",
+    "passport": "~0.2.0",
+    "passport-http": "~0.2.2",
+    "mysql": "~2.4.2",
+    "express": "~4.8.7",
+    "body-parser": "~1.7.0"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.5",
+    "time-grunt": "~0.4.0",
+    "load-grunt-tasks": "~0.6.0",
+    "grunt-contrib-jshint": "~0.10.0",
+    "jshint-stylish": "~0.4.0",
+    "grunt-mocha-test": "~0.11.0",
+    "grunt-env": "~0.4.1",
+    "supertest": "~0.13.0",
+    "should": "~4.0.4"
+  }
+}
