@@ -2,7 +2,7 @@
 
 var passport = require("passport"),
     BasicStrategy = require("passport-http").BasicStrategy,
-    db = require("./database"),
+    db = require("./datasources").MySQL,
     encryptor = require("./encryptor");
 
 function verify(username, password, done) {
@@ -49,7 +49,7 @@ function configure() {
 function authenticate(req, res, next) {
     passport.authenticate("basic", { session: false }, function (err, user) {
         if (err || !user) {
-            return res.send(401, {
+            return res.status(401).send({
                 success: false,
                 message: err || "Bad credentials. User not found"
             });

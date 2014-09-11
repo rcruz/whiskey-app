@@ -18,6 +18,11 @@ function findById(info, done) {
     var uid = info.uid;
 
     db.query("SELECT * FROM users WHERE uid = ?", [uid], function (err, rows, fields) {
+        // Exclude passwords
+        if (rows && rows.length === 1) {
+            delete rows[0].password;
+        }
+
         done({
             success: err || (rows.length === 0) ? false : true,
             message: err || "",
@@ -64,7 +69,7 @@ function remove(info, done) {
     };
 
     db.query("DELETE FROM users WHERE ?", [data], function (err, response) {
-        res.send({
+        done({
             success: err || (response.affectedRows === 0) ? false : true,
             message: err
         });
@@ -93,6 +98,14 @@ function update(info, done) {
 function findAll(info, done) {
 
     db.query("SELECT * FROM users", function (err, rows, fields) {
+        // Exclude passwords
+        var userRow;
+        if (rows) {
+            for (userRow in rows) {
+                delete rows[userRow].password;
+            }
+        }
+
         done({
             success: err ? false : true,
             message: err || "",

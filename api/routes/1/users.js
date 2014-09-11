@@ -16,7 +16,7 @@ var users,
 // Reused by all routes
 function respond(res, result) {
     var code = result.success ? 200 : 500;
-    res.status(code).send(result);
+    res.status(code).json(result);
 }
 
 function findById(req, res) {
@@ -28,11 +28,15 @@ function add(req, res) {
 }
 
 function remove(req, res) {
-    User.remove(req.body, respond.bind(null, res));
+    var info = req.body;
+    info.uid = req.param("uid");
+    User.remove(info, respond.bind(null, res));
 }
 
 function update(req, res) {
-    User.update(req.body, respond.bind(null, res));
+    var info = req.body;
+    info.uid = req.param("uid");
+    User.update(info, respond.bind(null, res));
 }
 
 function findAll(req, res) {
