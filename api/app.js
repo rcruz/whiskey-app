@@ -2,9 +2,9 @@
 
 var express = require("express"),
     bodyParser = require("body-parser"),
-    router = require("./router");
-    //passport = require("passport"),
-    //auth = require("./lib/auth");
+    router = require("./router"),
+    passport = require("passport"),
+    auth = require("./lib/auth");
 
 var app = express();
 
@@ -12,7 +12,7 @@ var app = express();
 app.use(bodyParser.json());
 
 // Use passport
-//app.use(passport.initialize());
+app.use(passport.initialize());
 
 // Add headers to all responses
 app.use(function (req, res, next) {
@@ -26,12 +26,12 @@ app.use(function (req, res, next) {
 });
 
 // Require auth on all /1/* routes
-//app.all("/1/*", auth.authenticate);
+app.all("/1/*", auth.authenticate);
 
 // Attach routes defined by router
 app.use(router);
 
 // Setup auth
-//auth.configure();
+auth.configure();
 
 module.exports = app;

@@ -7,10 +7,106 @@ var should = require('should'),
     USERNAME = 'rcruz',
     PASSWORD = 'pw';
 
-xdescribe('ROUTE /1/users', function () {
+describe('ROUTE /1/users', function () {
 
     beforeEach(function (done) {
         db.resetTestData(done);
+    });
+
+    describe('POST /1/users', function() {
+
+        it('should respond with failure JSON obj when request is unauthorized', function(done) {
+            request(app)
+            .post('/1/users')
+            .send({
+                uid: "jackdaniels",
+                email: "email@address.test",
+                firstName: "Jack",
+                lastName: "Daniels",
+                password: "invalid"
+            })
+            .expect(401)
+            .expect('Content-Type', /json/)
+            .end(function(err, res) {
+                if (err) return done(err);
+                res.body.success.should.equal(false);
+                done();
+            });
+        });
+
+        it('should respond with successful JSON obj when user is added', function(done) {
+            request(app)
+            .post('/1/users')
+            .auth(USERNAME, PASSWORD)
+            .send({
+                uid: "jackdaniels",
+                email: "email@address.test",
+                firstName: "Jack",
+                lastName: "Daniels",
+                password: "invalid"
+            })
+            .expect(200)
+            .expect('Content-Type', /json/)
+            .end(function(err, res) {
+                if (err) return done(err);
+                res.body.success.should.equal(true);
+                done();
+            });
+        });
+
+        it('should respond with failed JSON obj when duplicate user is added', function(done) {
+            request(app)
+            .post('/1/users')
+            .auth(USERNAME, PASSWORD)
+            .send({
+                uid: "rcruz",
+                email: "email@address.test",
+                firstName: "Jack",
+                lastName: "Daniels",
+                password: "invalid"
+            })
+            .expect(500)
+            .expect('Content-Type', /json/)
+            .end(function(err, res) {
+                if (err) return done(err);
+                res.body.success.should.equal(false);
+                done();
+            });
+        });
+    });
+
+    describe('GET /1/users', function() {
+
+        it('should respond with failure JSON obj when request is unauthorized', function(done) {
+            request(app)
+            .get('/1/users')
+            .expect(401)
+            .expect('Content-Type', /json/)
+            .end(function(err, res) {
+                if (err) return done(err);
+                res.body.success.should.equal(false);
+                done();
+            });
+        });
+
+        it('should respond with successful JSON obj when users exist', function(done) {
+            request(app)
+            .get('/1/users')
+            .auth(USERNAME, PASSWORD)
+            .expect(200)
+            .expect('Content-Type', /json/)
+            .end(function(err, res) {
+                if (err) return done(err);
+                res.body.success.should.equal(true);
+                res.body.data.should.be.instanceof(Array);
+                res.body.data.length.should.be.equal(2);
+                res.body.data.forEach(function (user) {
+                    (user.password === undefined).should.be.true;
+                });
+                done();
+            });
+        });
+
     });
 
     describe('GET /1/users/:uid', function() {
@@ -37,15 +133,16 @@ xdescribe('ROUTE /1/users', function () {
                 if (err) return done(err);
                 res.body.success.should.equal(true);
                 res.body.data.should.be.instanceof(Object);
+                (res.body.data.password === undefined).should.be.true;
                 done();
             });
         });
 
         it('should respond with failed JSON obj when uid does not exist', function(done) {
             request(app)
-            .get('/1/users/samosachaat')
+            .get('/1/users/jackdaniels')
             .auth(USERNAME, PASSWORD)
-            .expect(200)
+            .expect(500)
             .expect('Content-Type', /json/)
             .end(function(err, res) {
                 if (err) return done(err);
@@ -56,73 +153,11 @@ xdescribe('ROUTE /1/users', function () {
         });
     });
 
-    describe('POST /1/users/add', function() {
+    describe('PUT /1/users/:uid', function() {
 
         it('should respond with failure JSON obj when request is unauthorized', function(done) {
             request(app)
-            .post('/1/users/add')
-            .send({
-                uid: "samosachaat",
-                email: "email@address.test",
-                firstName: "Samosa",
-                lastName: "Chaat",
-                password: "invalid"
-            })
-            .expect(401)
-            .expect('Content-Type', /json/)
-            .end(function(err, res) {
-                if (err) return done(err);
-                res.body.success.should.equal(false);
-                done();
-            });
-        });
-
-        it('should respond with successful JSON obj when user is added', function(done) {
-            request(app)
-            .post('/1/users/add')
-            .auth(USERNAME, PASSWORD)
-            .send({
-                uid: "samosachaat",
-                email: "email@address.test",
-                firstName: "Samosa",
-                lastName: "Chaat",
-                password: "invalid"
-            })
-            .expect(200)
-            .expect('Content-Type', /json/)
-            .end(function(err, res) {
-                if (err) return done(err);
-                res.body.success.should.equal(true);
-                done();
-            });
-        });
-
-        it('should respond with failed JSON obj when duplicate user is added', function(done) {
-            request(app)
-            .post('/1/users/add')
-            .auth(USERNAME, PASSWORD)
-            .send({
-                uid: "rcruz",
-                email: "email@address.test",
-                firstName: "Samosa",
-                lastName: "Chaat",
-                password: "invalid"
-            })
-            .expect(200)
-            .expect('Content-Type', /json/)
-            .end(function(err, res) {
-                if (err) return done(err);
-                res.body.success.should.equal(false);
-                done();
-            });
-        });
-    });
-
-    describe('POST /1/users/update', function() {
-
-        it('should respond with failure JSON obj when request is unauthorized', function(done) {
-            request(app)
-            .post('/1/users/update')
+            .put('/1/users/rcruz')
             .send({
                 uid: "rcruz",
                 firstName: "First"
@@ -138,10 +173,9 @@ xdescribe('ROUTE /1/users', function () {
 
         it('should respond with successful JSON obj when user is updated', function(done) {
             request(app)
-            .post('/1/users/update')
+            .put('/1/users/rcruz')
             .auth(USERNAME, PASSWORD)
             .send({
-                uid: "rcruz",
                 firstName: "First"
             })
             .expect(200)
@@ -156,12 +190,10 @@ xdescribe('ROUTE /1/users', function () {
 
         it('should respond with failed JSON obj when non-existent user is updated', function(done) {
             request(app)
-            .post('/1/users/update')
+            .put('/1/users/jackdaniels')
             .auth(USERNAME, PASSWORD)
-            .send({
-                uid: "samosachaat"
-            })
-            .expect(200)
+            .send({})
+            .expect(500)
             .expect('Content-Type', /json/)
             .end(function(err, res) {
                 if (err) return done(err);
@@ -173,14 +205,12 @@ xdescribe('ROUTE /1/users', function () {
 
     });
 
-    describe('POST /1/users/remove', function() {
+    describe('DELETE /1/users/:uid', function() {
 
         it('should respond with failure JSON obj when request is unauthorized', function(done) {
             request(app)
-            .post('/1/users/remove')
-            .send({
-                uid: "rcruz"
-            })
+            .delete('/1/users/rcruz')
+            .send({})
             .expect(401)
             .expect('Content-Type', /json/)
             .end(function(err, res) {
@@ -192,11 +222,9 @@ xdescribe('ROUTE /1/users', function () {
 
         it('should respond with successful JSON obj when user is removed', function(done) {
             request(app)
-            .post('/1/users/remove')
+            .delete('/1/users/rcruz')
             .auth(USERNAME, PASSWORD)
-            .send({
-                uid: "rcruz"
-            })
+            .send({})
             .expect(200)
             .expect('Content-Type', /json/)
             .end(function(err, res) {
@@ -209,47 +237,16 @@ xdescribe('ROUTE /1/users', function () {
 
         it('should respond with failed JSON obj when non-existent user is removed', function(done) {
             request(app)
-            .post('/1/users/remove')
+            .delete('/1/users/jackdaniels')
             .auth(USERNAME, PASSWORD)
-            .send({
-                uid: "samosachaat"
-            })
-            .expect(200)
+            .send({})
+            .expect(500)
             .expect('Content-Type', /json/)
             .end(function(err, res) {
                 if (err) return done(err);
                 res.body.should.be.instanceof(Object);
                 res.body.success.should.equal(false);
                 done();
-            });
-        });
-
-        it('should respond with successful JSON obj when user is removed and ensure user data is also removed', function(done) {
-            request(app)
-            .post('/1/users/remove')
-            .auth(USERNAME, PASSWORD)
-            .send({
-                uid: "rcruz"
-            })
-            .expect(200)
-            .expect('Content-Type', /json/)
-            .end(function(err, res) {
-                if (err) return done(err);
-                res.body.should.be.instanceof(Object);
-                res.body.success.should.equal(true);
-
-                // Check for user data
-                request(app)
-                .get('/1/data/rcruz')
-                .auth("admin", "securepw") // Required since the user is deleted, and has no access
-                .expect(200)
-                .expect('Content-Type', /json/)
-                .end(function(err, res) {
-                    if (err) return done(err);
-                    res.body.success.should.equal(false);
-                    res.body.data.should.eql({});
-                    done();
-                });
             });
         });
 
