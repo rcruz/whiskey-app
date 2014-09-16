@@ -14,7 +14,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.
-  config.vm.box_url = "https://www.dropbox.com/s/lfuwol4cpgtbtsx/precise32-node"
+  config.vm.box_url = "https://vagrantcloud.com/rcruz/boxes/ubuntu-precise32-node/versions/1/providers/precise32-node.box"
 
   # Set non-login shell
   config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
@@ -22,6 +22,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Project provisioning
   config.vm.provision "shell", inline: "sudo npm install -g grunt-cli"
   config.vm.provision "shell", inline: "sudo apt-get update"
+  config.vm.provision "shell", inline: "sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password strongpw'"
+  config.vm.provision "shell", inline: "sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password strongpw'"
   config.vm.provision "shell", inline: "sudo apt-get -y install mysql-server"
   config.vm.provision "shell", inline: "cd /vagrant/api && npm install"
   #config.vm.provision "shell", inline: "cd /vagrant"
