@@ -18,6 +18,40 @@ USE `whiskeyAppTest`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `drinkReviews`
+--
+
+DROP TABLE IF EXISTS `drinkReviews`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `drinkReviews` (
+  `drid` int(11) NOT NULL AUTO_INCREMENT,
+  `did` int(11) NOT NULL,
+  `uid` varchar(45) DEFAULT NULL,
+  `dateCreated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `rating` int(3) NOT NULL,
+  `articleUrl` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`drid`),
+  UNIQUE KEY `drid_UNIQUE` (`drid`),
+  UNIQUE KEY `dr_did_uid_UNIQUE` (`did`,`uid`),
+  KEY `dr_did_idx` (`did`),
+  KEY `dr_uid_idx` (`uid`),
+  CONSTRAINT `dr_uid` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`) ON DELETE SET NULL ON UPDATE NO ACTION,
+  CONSTRAINT `dr_did` FOREIGN KEY (`did`) REFERENCES `drinks` (`did`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `drinkReviews`
+--
+
+LOCK TABLES `drinkReviews` WRITE;
+/*!40000 ALTER TABLE `drinkReviews` DISABLE KEYS */;
+INSERT INTO `drinkReviews` VALUES (1,1,'rcruz','2014-10-04 22:08:30',70,NULL);
+/*!40000 ALTER TABLE `drinkReviews` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `drinks`
 --
 
@@ -86,4 +120,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-09-10 21:32:29
+-- Dump completed on 2014-10-04 18:39:14
