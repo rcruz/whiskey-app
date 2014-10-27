@@ -2,6 +2,7 @@ var express = require("express"),
     v1_users = require("./routes/1/users"),
     v1_drinkreviews = require("./routes/1/drinkreviews"),
     v1_articles = require("./routes/1/articles");
+    v1_drinks = require('./routes/1/drinks');
 
 var router = express.Router();
 
@@ -31,5 +32,15 @@ router.route("/1/articles/:aid")
 router.route("/1/articles/")
     .get(v1_articles.findAll)
     .post(v1_articles.add);
+
+module.exports = router;
+router.route('/1/drinks/')
+    .get(v1_drinks.findAll)
+    .post(v1_drinks.add);
+
+router.route('/1/drinks/:did')
+    .get(v1_drinks.findByID)
+    .put(v1_drinks.update)
+    .delete(v1_drinks.remove);
 
 module.exports = router;
