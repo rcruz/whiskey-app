@@ -20,7 +20,6 @@ describe('ROUTE /1/drinks', function () {
   });
 
   describe('POST /1/drinks', function() {
-    // 401
     it('should respond with failure JSON obj when request is unauthorized', function(done) {
       request(app)
         .post('/1/drinks')
@@ -34,7 +33,6 @@ describe('ROUTE /1/drinks', function () {
         });
     });
 
-    // 200
     it('should respond with successful JSON obj when a drink is added', function(done) {
       request(app)
         .post('/1/drinks')
@@ -51,7 +49,6 @@ describe('ROUTE /1/drinks', function () {
   });
 
   describe('GET /1/drinks', function() {
-    // 401
     it('should respond with failure JSON object when request is unauthorized', function(done){
       request(app)
         .get('/1/drinks')
@@ -64,7 +61,6 @@ describe('ROUTE /1/drinks', function () {
         });
     });
 
-    // 200
     it('should respond with success JSON object when request is authorized', function(done){
       request(app)
         .get('/1/drinks')
@@ -76,17 +72,12 @@ describe('ROUTE /1/drinks', function () {
           res.body.success.should.equal(true);
           res.body.data.should.be.instanceof(Array);
           res.body.data.length.should.be.equal(2);
-          // res.body.data.forEach(function (drink) {
-          //   console.dir(drink);
-          //   should.exist(drink.name);
-          // });
           done();
         });
     });
   });
 
   describe('GET /1/drinks/:did', function() {
-    // 401
     it('should respond with failure JSON obj for unauthorized user', function(done) {
       request(app)
         .get('/1/drinks/1')
@@ -98,7 +89,6 @@ describe('ROUTE /1/drinks', function () {
           done();
         });
     });
-    // 200
     it('should respond with successful JSON obj when did exists', function(done) {
       request(app)
         .get('/1/drinks/1')
@@ -115,7 +105,6 @@ describe('ROUTE /1/drinks', function () {
   })
 
   describe('PUT /1/drinks/:did', function() {
-    // 401
     it('should respond with failure JSON for unauthorized user', function(done) {
       request(app)
         .put('/1/drinks/1')
@@ -131,7 +120,6 @@ describe('ROUTE /1/drinks', function () {
           done();
         });
     });
-    // 200
     it('should respond with successful JSON obj when did exists', function(done) {
       request(app)
         .put('/1/drinks/1')
@@ -149,7 +137,6 @@ describe('ROUTE /1/drinks', function () {
           done();
         });
     });
-    // 500
     it('should respond with failed JSON obj when non-existent drink is updated', function(done) {
       request(app)
       .put('/1/drinks/3')
