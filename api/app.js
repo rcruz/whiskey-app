@@ -2,11 +2,17 @@
 
 var express = require("express"),
     bodyParser = require("body-parser"),
+    morgan = require("morgan"),
+    fs = require("fs"),
     router = require("./router"),
     passport = require("passport"),
     auth = require("./lib/auth");
 
 var app = express();
+
+// Logging to access.log in append mode, Apache combined format
+var accessLogStream = fs.createWriteStream(__dirname + "/access.log", {flags: "a"})
+app.use(morgan("combined", {stream: accessLogStream}));
 
 // Parse application/json
 app.use(bodyParser.json());
