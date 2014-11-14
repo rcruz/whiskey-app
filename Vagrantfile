@@ -20,12 +20,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
 
   # Project provisioning
-  config.vm.provision "shell", inline: "sudo npm install -g grunt-cli"
-  config.vm.provision "shell", inline: "sudo apt-get update"
-  config.vm.provision "shell", inline: "sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password strongpw'"
-  config.vm.provision "shell", inline: "sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password strongpw'"
-  config.vm.provision "shell", inline: "sudo apt-get -y install mysql-server"
-  config.vm.provision "shell", inline: "cd /vagrant/api && npm install"
+  config.vm.provision "shell", inline: "cd /vagrant && ./provision.sh"
   #config.vm.provision "shell", inline: "cd /vagrant"
 
   # Create a forwarded port mapping which allows access to a specific port
