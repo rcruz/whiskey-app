@@ -152,8 +152,8 @@ describe('ROUTE /1/drinks', function () {
       });
     });
   });
-  
-  describe('DLETE /1/drinks:did', function() {
+
+  describe('DELETE /1/drinks:did', function() {
 
     it('should respond with failure JSON obj when request is unauthorized', function(done) {
       request(app)
